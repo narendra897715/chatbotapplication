@@ -1,0 +1,139 @@
+
+<div layout-fill class="back-ground-image2">
+<md-content class="background-trans" layout-fill>
+ <md-card class="md-whiteframe-2dp background-trans" layout-fill>
+ 	 <div layout-gt-sm="row" class="titleScreen layout-padding" layout-align="space-between center" style="background-color: #e6e6e6; height: 40px;"  >
+  <div class="screenTitle" style="padding-left: 8px;">Season</div>
+  <div flex ng-show="showTable">
+  	<div layout="row" flex layout-align="end center" >
+	  <div layout="row" layout-align="center center" >
+			<div layout="row" layout-align="center center"><md-tooltip>Excel Download</md-tooltip><img  ng-src="Authentication/Assets/excel.png"></div>
+			<i ng-hide ="roleBasedRestriction == 3" class="material-icons layout-padding" ng-click="SessionController.newItem(SessionForm)"><md-tooltip>New</md-tooltip>add_circle</i>
+			<form flex name="SessionController.filter.form" layout="row" layout-align="end center" >
+			   <md-input-container md-no-float class="searchInput" >
+			     <input type="text" placeholder="Search" ng-model="SessionController.query.filter" style="height: 30px !important;" aria-label="Follow" ng-model-options="SessionController.filter.options" />
+			   </md-input-container>
+			</form>
+		</div>
+  	</div>
+  </div>
+</div> 
+<md-table-container ng-show="showTable" class="meritus-table" ng-style="listStyle">
+ <table md-table>
+   <thead md-head md-order="SessionController.query.order">
+     <tr md-row>
+       <th md-column md-order-by="slNumber" style="min-width: 60px !important;max-width: 60px !important">S.no</th>
+       <th md-column md-order-by="season">Season</th>
+       <th md-column style="width: 150px" ng-hide ="roleBasedRestriction == 3" >Action items</th>
+     </tr>
+   </thead>
+   <tbody md-body ng-style="BodylistStyle">
+     <tr md-row ng-if="(SessionController.Grid_Data.data | filter: SessionController.query.filter).length == 0 || !SessionController.Grid_Data.data"><td colspan="6" md-cell style="text-align: center"><b>No data to display</b></td></tr>
+     <tr style="cursor: pointer;" md-row ng-repeat="Data in SessionController.Grid_Data.data | filter: SessionController.query.filter | orderBy: SessionController.query.order | limitTo: SessionController.query.limit : (SessionController.query.page -1) * SessionController.query.limit">
+       <td md-cell style="min-width: 60px !important;max-width: 60px !important"><span ng-bind="Data.slNumber"></span></td>
+       <td md-cell ng-class="(roleBasedRestriction == 3) ? 'borderDependingonRestrictions' : 'bordernoneforrestriction'"><span ng-bind="Data.season"></span></td>
+       <td md-cell style="border-right: 1px solid #ddd;" ng-hide ="roleBasedRestriction == 3" >
+       		<div layout="row" layout-align="space-around center">
+       			<!-- <div ng-click="SessionController.ViewData($event,Data)"><i class="material-icons"><md-tooltip>View</md-tooltip>visibility</i></div> -->
+       			<div ng-hide ="roleBasedRestriction == 3" ng-click="SessionController.EditData($event,Data)"><i class="material-icons"><md-tooltip>Edit</md-tooltip>create</i></div>
+       			<div ng-hide ="roleBasedRestriction == 2 || roleBasedRestriction == 3" ng-click="SessionController.RemoveData($event,Data)"><i class="material-icons"><md-tooltip>Delete</md-tooltip>remove_circle</i></div>
+       			<!-- <div ng-click="SessionController.CopyData($event,Data,SessionForm)"><i class="material-icons"><md-tooltip>Duplicate Record</md-tooltip>content_copy</i></div> -->
+       		</div>
+       </td>
+    </tbody>
+  </table>
+</md-table-container>
+
+<div layout="column"  flex ng-show="!showTable" layout-padding class="form-style">
+	<form name="SessionForm">
+	<div layout-gt-sm="row" layout-align="space-between center">
+		<div layout="column" flex=50>
+			<label>Session</label>
+			<div>
+				<md-input-container class="md-block">
+					<input type="text" ng-model="Session.season" name="season">
+				</md-input-container>
+			</div>
+		</div>
+	</div>
+	<div layout="row" layout-align="end center"> 
+		<div layout="row">
+			<md-button class="md-raised md-accent" ng-disabled="SessionForm.$pristine || !SessionForm.$dirty" ng-click="SessionController.saveData($event,SessionForm)">{{btnName}}</md-button>
+			<md-button class="md-raised md-accent" ng-click="SessionController.clearAll($event,SessionForm)">Clear All</md-button>
+			<md-button class="md-raised md-accent" ng-click="SessionController.closeForm($event)">Close</md-button>
+		</div>	
+	</div>
+	</form>
+	
+</div>
+
+
+<div flex></div>
+<div layout="row" style="border: 1px solid #ddd !important;" ng-if="SessionController.Grid_Data.count > 10">
+  <md-table-pagination layout="row" layout-align="start center" ng-if="SessionController.Grid_Data.count > 0"  ng-show="showTable" 
+  					   md-limit="SessionController.query.limit" md-limit-options="[10, 50,100,500,1000]" md-page="SessionController.query.page" 
+  					   md-total="{{SessionController.Grid_Data.count}}" md-page-select></md-table-pagination>
+
+ 
+</div>
+ </md-card>
+</md-content>
+</div>
+
+<script type="text/ng-template" id="viewDetails.html">  		
+		<md-dialog style="background-color:#e6eaed;height: auto; width: 40%;">  	        
+            <md-toolbar class="md-table-toolbar md-accent main_card_background">
+             <div class="md-toolbar-tools" layout-padding> 
+             <span class="md-title" style="Padding-left:0">Session View</span>
+             <div flex></div>
+             <md-button class="md-icon-button" ng-click="editDialog($event,Session)"> <md-tooltip>Edit</md-tooltip> <i class="material-icons">create</i> </md-button>
+				<div flex=1></div>
+             <md-button class="md-icon-button" ng-click="closeDialog()"> <md-tooltip>Close</md-tooltip> <i class="material-icons">clear</i> </md-button>
+             </div>
+            </md-toolbar>
+			<md-dialog-content > 
+		  <md-card md-theme-watch class="md-whiteframe-3dp view_content_card">
+           <md-card-content style="background-color: rgb(230, 234, 237);padding:0">
+				
+					<div layout="row" layout-align="space-between center">
+						<div layout="column">
+							<label>Session</label>
+							<div>
+								{{Session.season}}
+							</div>
+						</div>
+				</div>
+			
+<div layout="row" layout-align="space-between center">
+	 <div flex="5" hide-xs="" hide-sm=""></div>
+ 	 <div style="margin-right: 10px;">
+      <md-button  class="md-raised md-accent" ng-click="editDialog($event,Session)" class="md-primary">Edit</md-button>
+      <md-button  class="md-raised md-accent" ng-click="closeDialog()" class="md-primary">Close</md-button>
+	 </div>
+    </div>	
+        </md-card-content>      
+      </md-card> 
+	
+   </md-dialog-content>			
+ </md-dialog>
+</script>
+<style>
+.form-style md-input-container{
+	margin: 0 !important;
+}
+
+.form-style input,md-select{
+	background: #ddd !important
+}
+
+md-input-container .md-char-counter, md-input-container .md-input-message-animation{
+	line-height: 24px !important;
+}
+.md-select-value{
+	min-height: 35px !important;
+}
+
+</style>
+
+
+

@@ -1,0 +1,48 @@
+package com.merilytics.model;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+
+import com.merilytics.bo.UserDefinedFieldsBO;
+import com.merilytics.dao.UserDefinedFieldsDAO;
+
+
+
+@Configuration
+public class UserDefinedFieldsModel {
+	
+	@Autowired 
+	private UserDefinedFieldsDAO uDFdao;
+	
+	
+	public List<UserDefinedFieldsBO> displayUserDefinedFields(){
+		boolean status = true;
+		
+		List<UserDefinedFieldsBO> listOfUserDefinedFields  = uDFdao.displayUserDefinedFields(status);
+		
+		int count = 1;
+		for(UserDefinedFieldsBO bo : listOfUserDefinedFields) {
+			
+			bo.setsNo(count);
+			
+			count++;
+		}
+			
+			
+			
+		return listOfUserDefinedFields;
+		
+		
+	}
+	
+	public boolean updateUserDefinedFields(List<Map<String,Object>> listOfDetails){
+		return uDFdao.updateUserDefinedFields(listOfDetails);
+	}
+	
+	public boolean deleteUserDefinedFields(UserDefinedFieldsBO listOfDetails){
+		return uDFdao.deleteUserDefinedFields(listOfDetails);
+	}
+}

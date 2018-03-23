@@ -1,0 +1,49 @@
+package com.merilytics.controller;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.merilytics.bo.UserDefinedFieldsBO;
+import com.merilytics.config.TokenValidator;
+import com.merilytics.model.UserDefinedFieldsModel;
+
+@Controller
+public class UserDefinedFieldsController {
+	
+	@Autowired 
+	private UserDefinedFieldsModel uDFModel;
+	@Resource
+	private TokenValidator tokenValidator;
+
+	@RequestMapping(value = "/displayUserDefinedFields", method = RequestMethod.GET)
+	public ResponseEntity<?> displayUserDefinedFields(HttpServletRequest request,
+			HttpServletResponse response) {
+		String name = tokenValidator.isToken(request.getHeader("token"), request, response);
+
+		// Loggers.INFO_lOGGER.info(name + " Enter into item Master Screen");
+
+		if (name == null) {
+
+			return new ResponseEntity<>("{\"status\":\"Error in Current Project\"}", HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<>(uDFModel.displayUserDefinedFields(), HttpStatus.OK);
+	}
+	@RequestMapping(value = "/updateUserDefinedFields", method = RequestMethod.GET)
+	public @ResponseBody List<UserDefinedFieldsBO> updateUserDefinedFields() {
+		// return uDFModel.updateUserDefinedFields();
+		
+		return null;
+	}
+}

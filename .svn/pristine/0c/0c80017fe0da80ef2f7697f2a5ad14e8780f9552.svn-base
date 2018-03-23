@@ -1,0 +1,59 @@
+package com.merilytics.config;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.merilytics.bo.EmployeeBO;
+import com.merilytics.dao.EmployeeDAO;
+import com.merilytics.util.DateOperations;
+
+@Configuration("myUserDetailsService")
+public class MyUserDetailsService implements UserDetailsService  {
+	@Autowired
+	private EmployeeDAO dao;
+
+
+
+
+	
+	@Override
+	@Transactional
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		EmployeeBO user = dao.findUserByEmail(email);
+
+
+		if(user==null) {
+			throw new UsernameNotFoundException("email "+email+" not found!!!");
+		}
+		String pwd = user.getPassword();
+		List<GrantedAuthority> authorities= new ArrayList<GrantedAuthority>();
+		authorities.add(new SimpleGrantedAuthority("ROLE_"+user.getRole_id()));
+		User springUser = null;
+		Timestamp currentDate = new Timestamp(new Date().getTime());
+
+		if(DateOperations.diff(user.getLast_login_datetime(),currentDate) > 1000){
+			springUser = new User(user.getEmail(), pwd, 
+					true, true, false, true, authorities);
+		}
+		else 
+		{
+			springUser = new User(user.getEmail(), pwd, 
+					true, true, true, true, authorities);
+		}
+		return springUser;
+	}
+	
+
+}

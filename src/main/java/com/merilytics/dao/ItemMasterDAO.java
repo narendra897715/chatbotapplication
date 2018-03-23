@@ -1,0 +1,81 @@
+package com.merilytics.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.orm.hibernate5.HibernateTemplate;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.merilytics.bo.ItemMasterBO;
+import com.merilytics.util.Conversion;
+
+@Configuration
+public class ItemMasterDAO {
+
+	@Autowired(required = true)
+	@Qualifier("authenticationTemplete")
+	private HibernateTemplate authenticationTemplete;
+
+	@Autowired
+	private DatabaseDAO databaseDAO;
+
+	public List<Map<String, Object>> getItemMasterDetailsDatabase() {
+
+		return databaseDAO.executeStoredProc("CALL itemMasterDisplay();");
+
+	}
+
+	public List<Map<String, Object>> getPagination() {
+
+		return databaseDAO.executeStoredProc("CALL paginationValues();");
+
+	}
+
+	public List<List<Map<String, Object>>> getItemMasterPagination(Integer intialvalue, Integer secondvalue,
+			String search) {
+
+		String s = "CALL itemMaster(%s,%s,%s);";
+
+		String storedProc = String.format(s, intialvalue, secondvalue, Conversion.toDatabaseString(search));
+
+		return databaseDAO.executeJDBCcode(storedProc);
+
+	}
+
+	@Transactional
+	public Boolean insertItemMasterDetails(ItemMasterBO itemMasterBO) {
+		try {
+			authenticationTemplete.save(itemMasterBO);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	@Transactional
+	public Boolean updateItemMasterDetails(ItemMasterBO itemMasterBO) {
+		try {
+			authenticationTemplete.update(itemMasterBO);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	@Transactional
+	public Boolean deleteItemMasterDetails(ItemMasterBO itemMasterBO) {
+		try {
+			authenticationTemplete.delete(itemMasterBO);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+}

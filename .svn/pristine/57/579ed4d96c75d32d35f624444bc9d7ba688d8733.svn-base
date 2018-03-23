@@ -1,0 +1,126 @@
+package com.merilytics.dao;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.transaction.Transactional;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.jdbc.Work;
+import org.hibernate.query.Query;
+import org.hibernate.transform.Transformers;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.orm.hibernate5.HibernateTemplate;
+
+import com.merilytics.dto.PMCycleDTO;
+import com.merilytics.util.ResultSetConverter;
+
+@Configuration
+public class DatabaseDAO {
+
+	@Autowired(required = true)
+	@Qualifier("authenticationTemplete")
+	private HibernateTemplate authenticationTemplete;
+
+	@SuppressWarnings({ "rawtypes", "deprecation", "unchecked" })
+	public List<Map<String, Object>> executeStoredProc(String databaseQuery) {
+
+		SessionFactory sf = authenticationTemplete.getSessionFactory();
+		Session session = sf.openSession();
+
+		try {
+			Query query = session.createNativeQuery(databaseQuery);
+			query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+			return query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public List<List<Map<String, Object>>> executeJDBCcode(String databaseQuery) {
+
+		List<List<Map<String, Object>>> allTables = new LinkedList<List<Map<String, Object>>>();
+
+		SessionFactory sf = authenticationTemplete.getSessionFactory();
+		Session session = sf.openSession();
+
+		session.doWork(new Work() {
+
+			@Override
+			public void execute(Connection connection) throws SQLException {
+
+				CallableStatement cs = connection.prepareCall(databaseQuery);
+
+				boolean isResultSet = cs.execute();
+
+				ResultSet resultSet = null;
+
+				while (isResultSet) {
+					resultSet = cs.getResultSet();
+
+					allTables.add(ResultSetConverter.convert(resultSet));
+
+					isResultSet = cs.getMoreResults();
+
+					resultSet.close();
+
+				}
+
+			}
+
+		});
+
+		return allTables;
+
+	}
+
+	@Transactional
+	public void updateSQL(Integer primarykey, String primarykeycol, String tableName) {
+
+		SessionFactory sf = authenticationTemplete.getSessionFactory();
+		Session session = sf.openSession();
+		session.beginTransaction();
+		try {
+			String queryString = "update " + tableName + " set status= :status WHERE " + primarykeycol
+					+ "  = :primarykey ";
+			Query query = session.createQuery(queryString);
+			query.setParameter("status", false);
+			query.setParameter(primarykeycol, primarykey);
+			query.executeUpdate();
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+
+			session.close();
+		}
+	}
+
+	public void updateSQLQuery(String updateQuery) {
+
+		SessionFactory sf = authenticationTemplete.getSessionFactory();
+		Session session = sf.openSession();
+		session.beginTransaction();
+		try {
+			Query query = session.createNativeQuery(updateQuery);
+			query.executeUpdate();
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+
+			session.close();
+		}
+	}
+
+}

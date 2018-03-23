@@ -1,0 +1,139 @@
+
+<div layout-fill class="back-ground-image2">
+<md-content class="background-trans" layout-fill>
+ <md-card class="md-whiteframe-2dp background-trans" layout-fill>
+ 	 <div layout-gt-sm="row" class="titleScreen layout-padding" layout-align="space-between center" style="background-color: #e6e6e6; height: 40px;"  >
+  <div class="screenTitle" style="padding-left: 8px;">Fabric Type</div>
+  <div flex ng-show="showTable">
+  	<div layout="row" flex layout-align="end center" >
+	  <div layout="row" layout-align="center center" >
+			<div layout="row" layout-align="center center"><md-tooltip>Excel Download</md-tooltip><img  ng-src="Authentication/Assets/excel.png"></div>
+			<i ng-hide ="roleBasedRestriction == 3" class="material-icons layout-padding" ng-click="FabricTypeController.newItem(FabricTypeForm)"><md-tooltip>New</md-tooltip>add_circle</i>
+			<form flex name="FabricTypeController.filter.form" layout="row" layout-align="end center" >
+			   <md-input-container md-no-float class="searchInput" >
+			     <input type="text" placeholder="Search" ng-model="FabricTypeController.query.filter" style="height: 30px !important;" aria-label="Follow" ng-model-options="FabricTypeController.filter.options" />
+			   </md-input-container>
+			</form>
+		</div>
+  	</div>
+  </div>
+</div> 
+<md-table-container ng-show="showTable" class="meritus-table" ng-style="listStyle">
+ <table md-table>
+   <thead md-head md-order="FabricTypeController.query.order">
+     <tr md-row>
+       <th md-column md-order-by="slNumber" style="min-width: 60px !important;max-width: 60px !important">S.no</th>
+       <th md-column md-order-by="fabrictype">Fabric Type</th>
+       <th md-column style="width: 150px" ng-hide ="roleBasedRestriction == 3">Action items</th>
+     </tr>
+   </thead>
+   <tbody md-body ng-style="BodylistStyle">
+     <tr md-row ng-if="(FabricTypeController.Grid_Data.data | filter: FabricTypeController.query.filter).length == 0 || !FabricTypeController.Grid_Data.data"><td colspan="6" md-cell style="text-align: center"><b>No data to display</b></td></tr>
+     <tr style="cursor: pointer;" md-row ng-repeat="Data in FabricTypeController.Grid_Data.data | filter: FabricTypeController.query.filter | orderBy: FabricTypeController.query.order | limitTo: FabricTypeController.query.limit : (FabricTypeController.query.page -1) * FabricTypeController.query.limit">
+       <td md-cell style="min-width: 60px !important;max-width: 60px !important"><span ng-bind="Data.slNumber"></span></td>
+       <td md-cell ng-class="(roleBasedRestriction == 3) ? 'borderDependingonRestrictions' : 'bordernoneforrestriction'"><span ng-bind="Data.fabrictype"></span></td>
+       <td md-cell style="border-right: 1px solid #ddd;" ng-hide ="roleBasedRestriction == 3">
+       		<div layout="row" layout-align="space-around center">
+       			<!-- <div ng-click="FabricTypeController.ViewData($event,Data)"><i class="material-icons"><md-tooltip>View</md-tooltip>visibility</i></div> -->
+       			<div ng-hide ="roleBasedRestriction == 3" ng-click="FabricTypeController.EditData($event,Data)"><i class="material-icons"><md-tooltip>Edit</md-tooltip>create</i></div>
+       			<div ng-hide ="roleBasedRestriction == 2 || roleBasedRestriction == 3" ng-click="FabricTypeController.RemoveData($event,Data)"><i class="material-icons"><md-tooltip>Delete</md-tooltip>remove_circle</i></div>
+       			<!-- <div ng-click="FabricTypeController.CopyData($event,Data,FabricTypeForm)"><i class="material-icons"><md-tooltip>Duplicate Record</md-tooltip>content_copy</i></div> -->
+       		</div>
+       </td>
+    </tbody>
+  </table>
+</md-table-container>
+
+<div layout="column"  flex ng-show="!showTable" layout-padding class="form-style">
+	<form name="FabricTypeForm">
+	<div layout-gt-sm="row" layout-align="space-between center">
+		<div layout="column" flex-gt-sm=50>
+			<label>Fabric Type</label>
+			<div>
+				<md-input-container class="md-block">
+					<input type="text" ng-model="FabricType.fabrictype" name="baseUPC">
+				</md-input-container>
+			</div>
+		</div>
+	</div>
+	<div layout="row" layout-align="end center"> 
+		<div layout="row">
+			<md-button class="md-raised md-accent" ng-disabled="FabricTypeForm.$pristine || !FabricTypeForm.$dirty" ng-click="FabricTypeController.saveData($event,FabricTypeForm)">{{btnName}}</md-button>
+			<md-button class="md-raised md-accent" ng-click="FabricTypeController.clearAll($event,FabricTypeForm)">Clear All</md-button>
+			<md-button class="md-raised md-accent" ng-click="FabricTypeController.closeForm($event)">Close</md-button>
+		</div>	
+	</div>
+	</form>
+	
+</div>
+
+<div flex></div>
+
+<div layout="row" layout-align="end center" style="border: 1px solid #ddd !important;" ng-if="FabricTypeController.Grid_Data.count > 10">
+  <div>
+  <md-table-pagination layout="row" layout-align="start center" ng-if="FabricTypeController.Grid_Data.count > 0"  ng-show="showTable" 
+  					   md-limit="FabricTypeController.query.limit" md-limit-options="[15, 50,100,500,1000]" md-page="FabricTypeController.query.page" 
+  					   md-total="{{FabricTypeController.Grid_Data.count}}" md-page-select></md-table-pagination>
+</div>
+ 
+</div>
+ </md-card>
+</md-content>
+</div>
+
+<script type="text/ng-template" id="viewDetails.html">  		
+		<md-dialog style="background-color:#e6eaed;height: auto; width: 40%;">  	        
+            <md-toolbar class="md-table-toolbar md-accent main_card_background">
+             <div class="md-toolbar-tools" layout-padding> 
+             <span class="md-title" style="Padding-left:0">Fabric Type View</span>
+             <div flex></div>
+             <md-button class="md-icon-button" ng-click="editDialog($event,FabricType)"> <md-tooltip>Edit</md-tooltip> <i class="material-icons">create</i> </md-button>
+				<div flex=1></div>
+             <md-button class="md-icon-button" ng-click="closeDialog()"> <md-tooltip>Close</md-tooltip> <i class="material-icons">clear</i> </md-button>
+             </div>
+            </md-toolbar>
+			<md-dialog-content > 
+		  <md-card md-theme-watch class="md-whiteframe-3dp view_content_card">
+           <md-card-content style="background-color: rgb(230, 234, 237);padding:0">
+				
+					<div layout="row" layout-align="space-between center" layout-padding>
+						<div layout="column" class="md-block">
+							<label>Fabric Type</label>
+							<div>
+								{{FabricType.fabrictype}}
+							</div>
+						</div>
+				</div>
+			
+<div layout="row" layout-align="space-between center">
+	 <div flex="5" hide-xs="" hide-sm=""></div>
+ 	 <div style="margin-right: 10px;">
+      <md-button  class="md-raised md-accent" ng-click="editDialog($event,FabricType)" class="md-primary">Edit</md-button>
+      <md-button  class="md-raised md-accent" ng-click="closeDialog()" class="md-primary">Close</md-button>
+	 </div>
+    </div>	
+        </md-card-content>      
+      </md-card> 	
+   </md-dialog-content>			
+ </md-dialog>
+</script>
+<style>
+.form-style md-input-container{
+	margin: 0 !important;
+}
+
+.form-style input,md-select{
+	background: #ddd !important
+}
+
+md-input-container .md-char-counter, md-input-container .md-input-message-animation{
+	line-height: 24px !important;
+}
+.md-select-value{
+	min-height: 35px !important;
+}
+
+</style>
+
+
+

@@ -1,0 +1,399 @@
+package com.merilytics.model;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.context.annotation.Configuration;
+
+import com.merilytics.bo.ItemMasterBO;
+import com.merilytics.bo.UserDefinedFieldsBO;
+import com.merilytics.dao.DatabaseDAO;
+import com.merilytics.dao.ItemMasterDAO;
+import com.merilytics.dao.UserDefinedFieldsDAO;
+import com.merilytics.util.Checkdigit;
+import com.merilytics.util.Conversion;
+
+@Configuration
+public class ItemMasterModel {
+
+	@Resource
+	private ItemMasterDAO itemMasterDAO;
+
+	@Resource
+	private DatabaseDAO databaseDAO;
+
+	@Resource
+	private UserDefinedFieldsDAO userDefinedFieldsDAO;
+
+	public Boolean insertItemMasterDetails(Map<String, Object> internalmap) {
+
+		List<Map<String, Object>> uclist = databaseDAO.executeStoredProc(
+				"SELECT case when max(baseUPC) IS NULL THEN 1 ELSE max(baseUPC) + 1 END as baseUPC from tbl_itemmaster");
+		Double baseUPC;
+
+		if (uclist.size() > 0 && internalmap.get("baseUPC") == null)
+			baseUPC = Conversion.toDouble(uclist.get(0).get("baseUPC"));
+		else
+			baseUPC = Conversion.toDouble(internalmap.get("baseUPC"));
+
+		String shortDecription = "SELECT CONCAT((select colorVariant from tbl_static_colorvariant WHERE pkColorVariantID = %s),' '\r\n"
+				+ "             ,(select pattern from tbl_static_pattern WHERE pkPatternID = %s),' '\r\n"
+				+ "             ,(SELECT productType FROM tbl_static_producttype WHERE pkProductType = %s)) shortDecription";
+
+		String s = "select CONCAT('%s-',size) as skuCode from tbl_static_size where pkSizeID = %s";
+
+		List<Map<String, Object>> listskuID = databaseDAO.executeStoredProc(String.format(s,
+				Conversion.toString(internalmap.get("style")), Conversion.toString(internalmap.get("pkSizeID"))));
+
+		String skucode = null;
+
+		if (listskuID != null && listskuID.size() > 0) {
+
+			skucode = Conversion.toString(listskuID.get(0).get("skuCode"));
+
+			// Conversion.toString(internalmap.get("skuCode"));
+
+		}
+
+		skucode = Conversion.toString(internalmap.get("skuCode"));
+
+		String shortDec = null;
+
+		List<Map<String, Object>> shortDecriptionList = databaseDAO.executeStoredProc(
+				String.format(shortDecription, Conversion.toString(internalmap.get("pkColorVariantID")),
+						Conversion.toString(internalmap.get("pkPatternID")),
+						Conversion.toString(internalmap.get("pkProductType"))));
+
+		if (shortDecriptionList != null && shortDecriptionList.size() > 0) {
+
+			shortDec = Conversion.toString(shortDecriptionList.get(0).get("shortDecription"));
+
+			// Conversion.toString(internalmap.get("skuCode"));
+
+		}
+
+		ItemMasterBO bo = new ItemMasterBO();
+
+		bo.setItemmasterID(Conversion.toInteger(internalmap.get("itemmasterID")));
+		bo.setSkuCode(skucode);
+
+		bo.setBaseUPC(baseUPC);
+
+		bo.setuPCCheckDigit(Conversion.toString(Checkdigit.upcDigit(baseUPC)));
+
+		bo.setnRFSize(Conversion.toDouble(internalmap.get("nRFSize")));
+		bo.setnRFColor(Conversion.toDouble(internalmap.get("nRFColor")));
+		bo.setDirectAllocation(Conversion.toDouble(internalmap.get("directAllocation")));
+		bo.setStyle(Conversion.toString(internalmap.get("style")));
+		bo.setStyleName(Conversion.toString(internalmap.get("styleName")));
+		bo.setShortDescription(shortDec);
+		bo.setLongDescription((Conversion.toString(internalmap.get("longDescription"))));
+		bo.setSize((Conversion.toString(internalmap.get("pkSizeID"))));
+		bo.setShopifySize((Conversion.toString(internalmap.get("pkshopifySizeID"))));
+		bo.setnOSize((Conversion.toString(internalmap.get("pkNoSizeID"))));
+		bo.setFashionPyramid((Conversion.toString(internalmap.get("pkFashionPyramidID"))));
+		bo.setOccasion((Conversion.toString(internalmap.get("pkOccasionID"))));
+		bo.setCategory((Conversion.toString(internalmap.get("pkCategoryID"))));
+		bo.setSubCategory((Conversion.toString(internalmap.get("pkSubCategoryID"))));
+		bo.setnOCategoyCode((Conversion.toDouble(internalmap.get("pkNOCategoryCode"))));
+		bo.setnOCategory((Conversion.toString(internalmap.get("pknOCategoryID"))));
+		bo.setFabricType((Conversion.toString(internalmap.get("pkFabricType"))));
+		bo.setProductType((Conversion.toString(internalmap.get("pkProductType"))));
+		bo.setFabrication((Conversion.toString(internalmap.get("pkFabricationID"))));
+		bo.setProductStyle((Conversion.toString(internalmap.get("pkProductStyleID"))));
+		bo.setColorFamily((Conversion.toString(internalmap.get("pkColorFamilyID"))));
+		bo.setColorVariant((Conversion.toString(internalmap.get("pkColorVariantID"))));
+		bo.setShade((Conversion.toString(internalmap.get("pkShadeID"))));
+		bo.setPattern((Conversion.toString(internalmap.get("pkPatternID"))));
+		bo.setScale((Conversion.toString(internalmap.get("pkScaleID"))));
+		bo.setFit((Conversion.toString(internalmap.get("fit"))));
+		bo.setnOSeason((Conversion.toString(internalmap.get("pkNOSeasonID"))));
+		bo.setSeason((Conversion.toString(internalmap.get("pkSeasonID"))));
+		bo.setCollection((Conversion.toString(internalmap.get("pkCollectionID"))));
+		bo.setMonth((Conversion.toString(internalmap.get("pkMonth"))));
+		bo.setYear((Conversion.toString(internalmap.get("pkYear"))));
+		bo.setCollar((Conversion.toString(internalmap.get("collar"))));
+		bo.setBottomRise((Conversion.toString(internalmap.get("pkBottomRiseID"))));
+		bo.setrMCost((Conversion.toString(internalmap.get("rMCost"))));
+		bo.setrMYield((Conversion.toString(internalmap.get("rMYield"))));
+		bo.setCutSewCost((Conversion.toString(internalmap.get("cutSewCost"))));
+		bo.setStandardCost((Conversion.toString(internalmap.get("standardCost"))));
+		bo.setInboundFreightEstimate((Conversion.toString(internalmap.get("inboundFreightEstimate"))));
+		bo.setLineHaulEstimate((Conversion.toString(internalmap.get("lineHaulEstimate"))));
+		bo.setFullyLoaded((Conversion.toString(internalmap.get("fullyLoaded"))));
+		bo.setRetailPrice((Conversion.toString(internalmap.get("retailPrice"))));
+		bo.setwSPrice((Conversion.toString(internalmap.get("wSPrice"))));
+		bo.setFinishOrRaw(Conversion.toBoolean(internalmap.get("finishOrRaw")));
+		bo.setuDF1((Conversion.toString(internalmap.get("uDF1"))));
+		bo.setuDF2((Conversion.toString(internalmap.get("uDF2"))));
+		bo.setuDF3((Conversion.toString(internalmap.get("uDF3"))));
+		bo.setuDF4((Conversion.toString(internalmap.get("uDF4"))));
+		bo.setuDF5((Conversion.toString(internalmap.get("uDF5"))));
+		bo.setuDF6((Conversion.toString(internalmap.get("uDF6"))));
+		bo.setuDF7((Conversion.toString(internalmap.get("uDF7"))));
+		bo.setuDF8((Conversion.toString(internalmap.get("uDF8"))));
+		bo.setuDF9((Conversion.toString(internalmap.get("uDF9"))));
+		bo.setuDF10((Conversion.toString(internalmap.get("uDF10"))));
+
+
+		return bo.getItemmasterID() == null ? itemMasterDAO.insertItemMasterDetails(bo)
+				: itemMasterDAO.updateItemMasterDetails(bo);
+
+	}
+
+	public Boolean insertItemMasterDetailsRawMaterial(Map<String, Object> internalmap) {
+
+		ItemMasterBO bo = new ItemMasterBO();
+
+		bo.setItemmasterID(Conversion.toInteger(internalmap.get("itemmasterID")));
+		bo.setSkuCode(Conversion.toString(internalmap.get("skuCode")));
+
+		bo.setBaseUPC(Conversion.toDouble(internalmap.get("baseUPC")));
+
+		bo.setuPCCheckDigit(Conversion.toString("uPCCheckDigit"));
+
+		bo.setnRFSize(Conversion.toDouble(internalmap.get("nRFSize")));
+		bo.setnRFColor(Conversion.toDouble(internalmap.get("nRFColor")));
+		bo.setDirectAllocation(Conversion.toDouble(internalmap.get("directAllocation")));
+		bo.setStyle(Conversion.toString(internalmap.get("style")));
+		bo.setStyleName(Conversion.toString(internalmap.get("styleName")));
+		bo.setShortDescription(Conversion.toString(internalmap.get("shortDescription")));
+		bo.setLongDescription((Conversion.toString(internalmap.get("longDescription"))));
+		bo.setSize((Conversion.toString(internalmap.get("pkSizeID"))));
+		bo.setShopifySize((Conversion.toString(internalmap.get("pkshopifySizeID"))));
+		bo.setnOSize((Conversion.toString(internalmap.get("pkNoSizeID"))));
+		bo.setFashionPyramid((Conversion.toString(internalmap.get("pkFashionPyramidID"))));
+		bo.setOccasion((Conversion.toString(internalmap.get("pkOccasionID"))));
+		bo.setCategory((Conversion.toString(internalmap.get("pkCategoryID"))));
+		bo.setSubCategory((Conversion.toString(internalmap.get("pkSubCategoryID"))));
+		bo.setnOCategoyCode((Conversion.toDouble(internalmap.get("pkNOCategoryCode"))));
+		bo.setnOCategory((Conversion.toString(internalmap.get("pknOCategoryID"))));
+		bo.setFabricType((Conversion.toString(internalmap.get("pkFabricType"))));
+		bo.setProductType((Conversion.toString(internalmap.get("pkProductType"))));
+		bo.setFabrication((Conversion.toString(internalmap.get("pkFabricationID"))));
+		bo.setProductStyle((Conversion.toString(internalmap.get("pkProductStyleID"))));
+		bo.setColorFamily((Conversion.toString(internalmap.get("pkColorFamilyID"))));
+		bo.setColorVariant((Conversion.toString(internalmap.get("pkColorVariantID"))));
+		bo.setShade((Conversion.toString(internalmap.get("pkShadeID"))));
+		bo.setPattern((Conversion.toString(internalmap.get("pkPatternID"))));
+		bo.setScale((Conversion.toString(internalmap.get("pkScaleID"))));
+		bo.setFit((Conversion.toString(internalmap.get("fit"))));
+		bo.setnOSeason((Conversion.toString(internalmap.get("pkNOSeasonID"))));
+		bo.setSeason((Conversion.toString(internalmap.get("pkSeasonID"))));
+		bo.setCollection((Conversion.toString(internalmap.get("pkCollectionID"))));
+		bo.setMonth((Conversion.toString(internalmap.get("pkMonth"))));
+		bo.setYear((Conversion.toString(internalmap.get("pkYear"))));
+		bo.setCollar((Conversion.toString(internalmap.get("collar"))));
+		bo.setBottomRise((Conversion.toString(internalmap.get("pkBottomRiseID"))));
+		bo.setrMCost((Conversion.toString(internalmap.get("rMCost"))));
+		bo.setrMYield((Conversion.toString(internalmap.get("rMYield"))));
+		bo.setCutSewCost((Conversion.toString(internalmap.get("cutSewCost"))));
+		bo.setStandardCost((Conversion.toString(internalmap.get("standardCost"))));
+		bo.setInboundFreightEstimate((Conversion.toString(internalmap.get("inboundFreightEstimate"))));
+		bo.setLineHaulEstimate((Conversion.toString(internalmap.get("lineHaulEstimate"))));
+		bo.setFullyLoaded((Conversion.toString(internalmap.get("fullyLoaded"))));
+		bo.setRetailPrice((Conversion.toString(internalmap.get("retailPrice"))));
+		bo.setwSPrice((Conversion.toString(internalmap.get("wSPrice"))));
+		bo.setFinishOrRaw(Conversion.toBoolean(internalmap.get("finishOrRaw")));
+		bo.setuDF1((Conversion.toString(internalmap.get("uDF1"))));
+		bo.setuDF2((Conversion.toString(internalmap.get("uDF2"))));
+		bo.setuDF3((Conversion.toString(internalmap.get("uDF3"))));
+		bo.setuDF4((Conversion.toString(internalmap.get("uDF4"))));
+		bo.setuDF5((Conversion.toString(internalmap.get("uDF5"))));
+		bo.setuDF6((Conversion.toString(internalmap.get("uDF6"))));
+		bo.setuDF7((Conversion.toString(internalmap.get("uDF7"))));
+		bo.setuDF8((Conversion.toString(internalmap.get("uDF8"))));
+		bo.setuDF9((Conversion.toString(internalmap.get("uDF9"))));
+		bo.setuDF10((Conversion.toString(internalmap.get("uDF10"))));
+
+
+		return bo.getItemmasterID() == null ? itemMasterDAO.insertItemMasterDetails(bo)
+				: itemMasterDAO.updateItemMasterDetails(bo);
+
+	}
+
+	public Boolean deleteItemMasterDetails(Map<String, Object> internalmap) {
+
+		ItemMasterBO bo = new ItemMasterBO();
+
+		bo.setItemmasterID(Conversion.toInteger(internalmap.get("itemmasterID")));
+
+		return itemMasterDAO.deleteItemMasterDetails(bo);
+
+	}
+
+	public Map<String, Object> getItemMasterExcellDownload() {
+
+		List<Map<String, Object>> databasevalue = itemMasterDAO.getItemMasterDetailsDatabase();
+
+		List<UserDefinedFieldsBO> listUserDefinedFieldsBO = userDefinedFieldsDAO.displayUserDefinedFields(true);
+
+		Map<String, Object> finalMap = new LinkedHashMap<String, Object>();
+
+		List<String> keySet = null;
+
+		List<Map<String, Object>> finallist = new LinkedList<Map<String, Object>>();
+
+		for (Map<String, Object> internalmap : databasevalue) {
+
+			Map<String, Object> finalmap = new LinkedHashMap<>();
+
+			finalmap.put("Sl.No.", internalmap.get("slNumber"));
+			finalmap.put("SKU_Code", internalmap.get("skuCode"));
+			finalmap.put("Base UPC", internalmap.get("baseUPC"));
+			finalmap.put("UPC + Check Digit", internalmap.get("uPCCheckDigit"));
+			finalmap.put("NRF Size", internalmap.get("nRFSize"));
+			finalmap.put("NRF Color", internalmap.get("nRFColor"));
+			finalmap.put("Direct Allocation", internalmap.get("directAllocation"));
+			finalmap.put("Style", internalmap.get("style"));
+			finalmap.put("Style Name", internalmap.get("styleName"));
+			finalmap.put("Short Description", internalmap.get("shortDescription"));
+			finalmap.put("Long Description", internalmap.get("longDescription"));
+			finalmap.put("Size", internalmap.get("size"));
+			finalmap.put("Shopify Size", internalmap.get("shopifySize"));
+			finalmap.put("NO Size", internalmap.get("nOSize"));
+			finalmap.put("Fashion Pyramid", internalmap.get("fashionPyramid"));
+			finalmap.put("Occasion", internalmap.get("occasion"));
+			finalmap.put("Category", internalmap.get("category"));
+			finalmap.put("Sub-Category", internalmap.get("subCategory"));
+			finalmap.put("NO Categoy Code", internalmap.get("nOCategoyCode"));
+			finalmap.put("NO Category", internalmap.get("nOCategory"));
+			finalmap.put("Fabric Type", internalmap.get("fabricType"));
+			finalmap.put("Product Type", internalmap.get("productType"));
+			finalmap.put("Fabrication", internalmap.get("fabrication"));
+			finalmap.put("Product Style", internalmap.get("productStyle"));
+			finalmap.put("Color Family", internalmap.get("colorFamily"));
+			finalmap.put("Color Variant", internalmap.get("colorVariant"));
+			finalmap.put("Shade", internalmap.get("shade"));
+			finalmap.put("Pattern", internalmap.get("pattern"));
+			finalmap.put("Scale", internalmap.get("scale"));
+			finalmap.put("Fit", internalmap.get("fit"));
+			finalmap.put("NO Season", internalmap.get("nOSeason"));
+			finalmap.put("Season", internalmap.get("season"));
+			finalmap.put("Collection", internalmap.get("collection"));
+			finalmap.put("Delivery Month", internalmap.get("month"));
+			finalmap.put("Year", internalmap.get("year"));
+			finalmap.put("Collar", internalmap.get("collar"));
+			finalmap.put("Bottom Rise", internalmap.get("bottomRise"));
+			finalmap.put("RM Cost", internalmap.get("rMCost"));
+			finalmap.put("RM Yield", internalmap.get("rMYield"));
+			finalmap.put("Cut & Sew Cost", internalmap.get("cutSewCost"));
+			finalmap.put("Standard Cost (RM $ x Yield + C&S $)", internalmap.get("standardCost"));
+			finalmap.put("Inbound Freight Estimate PER UNIT", internalmap.get("inboundFreightEstimate"));
+			finalmap.put("Line Haul Estimate PER UNIT", internalmap.get("lineHaulEstimate"));
+			finalmap.put("Fully Loaded Standard Cost", internalmap.get("fullyLoaded"));
+			finalmap.put("Retail Price", internalmap.get("retailPrice"));
+			finalmap.put("WS Price", internalmap.get("wSPrice"));
+
+			listUserDefinedFieldsBO.forEach(userDefinedFieldsBO -> {
+				finalmap.put(userDefinedFieldsBO.getColumnName(), internalmap.get(userDefinedFieldsBO.getuDF()));
+			});
+
+			finallist.add(finalmap);
+
+		}
+
+		Map<String, String> dataType = new LinkedHashMap<String, String>();
+
+		dataType.put("Sl.No.", "Number");
+		dataType.put("SKU_Code", "String");
+		dataType.put("Base UPC", "Number");
+		dataType.put("UPC + Check Digit", "Number");
+		dataType.put("NRF Size", "Number");
+		dataType.put("NRF Color", "Number");
+		dataType.put("Direct Allocation", "Number");
+		dataType.put("Style", "String");
+		dataType.put("Style Name", "String");
+		dataType.put("Short Description", "String");
+		dataType.put("Long Description", "String");
+		dataType.put("Size", "String");
+		dataType.put("Shopify Size", "String");
+		dataType.put("NO Size", "String");
+		dataType.put("Fashion Pyramid", "String");
+		dataType.put("Occasion", "String");
+		dataType.put("Category", "String");
+		dataType.put("Sub-Category", "String");
+		dataType.put("NO Categoy Code", "String");
+		dataType.put("NO Category", "String");
+		dataType.put("Fabric Type", "String");
+		dataType.put("Product Type", "String");
+		dataType.put("Fabrication", "String");
+		dataType.put("Product Style", "String");
+		dataType.put("Color Family", "String");
+		dataType.put("Color Variant", "String");
+		dataType.put("Shade", "String");
+		dataType.put("Pattern", "String");
+		dataType.put("Scale", "String");
+		dataType.put("Fit", "String");
+		dataType.put("NO Season", "String");
+		dataType.put("Season", "String");
+		dataType.put("Collection", "String");
+		dataType.put("Delivery Month", "String");
+		dataType.put("Year", "Number");
+		dataType.put("Collar", "String");
+		dataType.put("Bottom Rise", "String");
+		dataType.put("RM Cost", "Currency");
+		dataType.put("RM Yield", "Integer");
+		dataType.put("Cut & Sew Cost", "Currency");
+		dataType.put("Standard Cost (RM $ x Yield + C&S $)", "Currency");
+		dataType.put("Inbound Freight Estimate PER UNIT", "Currency");
+		dataType.put("Line Haul Estimate PER UNIT", "Currency");
+		dataType.put("Fully Loaded Standard Cost", "Currency");
+		dataType.put("Retail Price", "Currency");
+		dataType.put("WS Price", "Currency");
+
+		listUserDefinedFieldsBO.forEach(userDefinedFieldsBO -> {
+			dataType.put(userDefinedFieldsBO.getColumnName(), "String");
+		});
+
+		keySet = new ArrayList<String>(finallist.get(0).keySet());
+
+		finalMap.put("body", finallist);
+		finalMap.put("header", keySet);
+		finalMap.put("dataType", dataType);
+		finalMap.put("name", "Item Master");
+
+		return finalMap;
+
+	}
+
+	public Object uniqueSKUID(Map<String, Object> internalmap) {
+
+		@SuppressWarnings("unused")
+		String checkForSize = "select case when exists(select 1 from tbl_itemmaster im where im.skuCode = (select CONCAT('%s-',size) as skuCode from tbl_static_size where pkSizeID = %s))  then 'true' else 'false' end as status";
+
+		String skuCheck = "select case when exists(select 1 from tbl_itemmaster im where im.skuCode = '%s')  then 'true' else 'false' end as status";
+
+		// List<Map<String, Object>> listskuID =
+		// databaseDAO.executeStoredProc(String.format(checkForSize,
+		// Conversion.toString(internalmap.get("style")),
+		// Conversion.toString(internalmap.get("pkSizeID"))));
+
+		List<Map<String, Object>> listskuID = databaseDAO
+				.executeStoredProc(String.format(skuCheck, Conversion.toString(internalmap.get("skuCode"))));
+
+		return listskuID.get(0).get("status");
+	}
+
+	public List<Map<String, Object>> getPagination() {
+
+		return itemMasterDAO.getPagination();
+
+	}
+
+	public List<List<Map<String, Object>>> getItemMasterPagination(Map<String, Object> internalmap) {
+
+		Integer startNumber = Conversion.toInteger(internalmap.get("startNumber"));
+		Integer endNumber = Conversion.toInteger(internalmap.get("endNumber"));
+		String search = Conversion.toString(internalmap.get("search"));
+
+		return itemMasterDAO.getItemMasterPagination(startNumber, endNumber, search);
+
+	}
+
+}

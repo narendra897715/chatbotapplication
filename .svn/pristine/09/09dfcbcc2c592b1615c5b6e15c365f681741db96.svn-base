@@ -1,0 +1,55 @@
+<div layout-fill class="back-ground-image2">
+
+<md-content class="background-trans" layout-fill>
+ <md-card class="md-whiteframe-2dp background-trans" layout-fill>
+ 	 <div layout-gt-sm="row" class="titleScreen layout-padding" layout-align="space-between center" style="background-color: #e6e6e6; height: 40px;"  >
+  <div class="screenTitle" style="padding-left: 8px;">Add New Column</div>
+  
+</div> 
+<div layout="row"> 
+		<div layout="row" flex="30" layout-align="end center">
+			<md-button class="md-raised md-accent"  ng-click="backToItemMaster()"  class="md-primary">Back To Item master</md-button>
+			<i  class="material-icons layout-padding" ng-click="AddnewcolumnController.addNewColumn()"><md-tooltip>New</md-tooltip>add_circle</i>
+		</div>	
+	</div>
+
+<md-table-container  class="meritus-table" ng-style="listStyle" >
+
+ <table md-table>
+   <thead md-head >
+     <tr md-row>
+       <th md-column md-order-by="slNumber" style="min-width: 60px !important;max-width: 60px !important">S.no</th>
+       <th md-column md-order-by="size" >Column Name</th>
+       <th md-column style="width: 150px">Action items</th>
+     </tr>
+   </thead>
+   <tbody md-body ng-style="BodylistStyle">
+    
+     <tr style="cursor: pointer;" md-row ng-repeat="column in NewcolumnNames">
+       <td md-cell style="min-width: 60px !important;max-width: 60px !important">{{$index+1}}</td>
+       <td md-cell>
+       <md-input-container>
+  	<input type="text" required ng-model="column.columnName" name="dayOfTheWeek"  aria-label="dayOfTheWeek" style="border: 2px solid rgb(149, 175, 40) !important;">
+  			 								
+  			 							</md-input-container>
+       </td>
+       <td md-cell style="border-right: 1px solid #ddd;">
+       		
+       		<i class="material-icons merilytics-cursor" ng-click="deletecolumn(column)"><md-tooltip md-direction="top">Delete</md-tooltip>remove_circle</i>
+       </td>
+       </tr>
+    </tbody>
+   
+  </table>
+</md-table-container>
+ <div layout="row"> 
+		<div layout="row" flex="30" layout-align="end center">
+			<md-button class="md-raised md-accent"  ng-click="savenewcolumn()" class="md-primary">Save</md-button>
+			
+		</div>	
+	</div>
+
+
+</md-card>
+</md-content>
+</div>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html ng-cloak lang="en" data-ng-app="landing">
+<head>
+ <title>MIZZEN+MAIN</title>      
+ <!-- Required meta tags -->
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">    
+ <link rel="shortcut icon" href="Authentication/Assets/favicon.png" />
+ 
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons"  rel="stylesheet">
+<!--  <script src="http://cdn.jsdelivr.net/angular-material-icons/0.4.0/angular-material-icons.min.js"></script> -->
+ 
+ <!-- <link rel="icon" type="image/png" sizes="32x32" href="//cdn.shopify.com/s/files/1/0163/4002/t/85/assets/favicon-32x32.png?2960717848489939685"> -->
+  <script type="text/javascript" src="initiate.js"></script>
+</head>
+
+<body layout="column" md-theme="meritus" ng-controller="landingController" style="max-height: 100%;overflow: hidden;"> 
+ <div ui-view flex layout="column" style="overflow: hidden !important;"></div> 
+</body>
+
+</html>

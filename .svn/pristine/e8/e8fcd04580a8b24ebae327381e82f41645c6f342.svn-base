@@ -1,0 +1,55 @@
+package com.merilytics.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.orm.hibernate5.HibernateTemplate;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.merilytics.bo.UserDefinedFieldsBO;
+
+@Configuration
+public class UserDefinedFieldsDAO {
+	@Autowired(required = true)
+	@Qualifier("authenticationTemplete")
+	private HibernateTemplate authenticationTemplete;
+	
+	public List<UserDefinedFieldsBO> displayUserDefinedFields(){
+		
+		DetachedCriteria dc = DetachedCriteria.forClass(UserDefinedFieldsBO.class);
+		dc.add(Restrictions.eq("status", true));
+		List<UserDefinedFieldsBO> listOfUserDefinedFields = (List<UserDefinedFieldsBO>) authenticationTemplete.findByCriteria(dc);
+		return listOfUserDefinedFields;
+	}
+	
+	@Transactional
+	public boolean updateUserDefinedFields(List<Map<String,Object>> listOfDetails){
+		boolean isUpdated = false;
+		try {
+		for(Map<String,Object> mapOfDetails : listOfDetails) {
+			System.out.println(mapOfDetails);
+		UserDefinedFieldsBO uDFBO = authenticationTemplete.load(UserDefinedFieldsBO.class, (Integer)mapOfDetails.get("pkID"));	
+		uDFBO.setColumnName(mapOfDetails.get("columnName").toString());
+		uDFBO.setStatus(true);
+		}
+		isUpdated = true;
+		}
+		catch(Exception err) {
+			isUpdated = false;
+			err.printStackTrace();
+		}	
+		return isUpdated;
+	}
+	
+	
+	
+	
+	
+	
+
+}

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.springframework.org/schema/tx
+	    http://www.springframework.org/schema/tx/spring-tx.xsd">
+        
+  <context:component-scan base-package="com.merilytics.controller,com.merilytics.dto,com.merilytics.util,com.merilytics.config" />
+  <tx:annotation-driven/>
+  <mvc:annotation-driven />
+  <mvc:default-servlet-handler />
+  <mvc:resources mapping="/Authentication/Partials/**" location="/Authentication/Partials/"/>
+  <mvc:resources mapping="/Authentication/Assets/**" location="/Authentication/Assets/"/>
+  <mvc:resources mapping="/Authentication/Styles/**" location="/Authentication/Styles/"/>
+  <mvc:resources mapping="/Authentication/Directives/**" location="/Authentication/Directives/"/>
+  <mvc:resources mapping="/Authentication/Filters/**" location="/Authentication/Filters/"/>
+  <mvc:resources mapping="/Authentication/Controllers/**" location="/Authentication/Controllers/"/>
+  <mvc:resources mapping="/Authentication/Services/**" location="/Authentication/Services/"/>
+  <mvc:resources mapping="/Authentication/View/**" location="/Authentication/View/"/>
+ <!--  <mvc:resources mapping="/ExcelTemplates/**" location="/ExcelTemplates/"/> -->
+  <mvc:resources mapping="initiate.js" location="initiate.js"/>
+
+<!-- <mvc:view-controller path="/" view-name="index"/> -->
+
+  <bean id="view" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="prefix" value="/Pages/"/>
+    <property name="suffix" value=".jsp"/>
+  </bean>
+  
+  
+  <bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"/>
+  
+ </beans>

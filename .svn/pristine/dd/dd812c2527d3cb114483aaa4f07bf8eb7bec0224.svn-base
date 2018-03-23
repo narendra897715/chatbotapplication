@@ -1,0 +1,137 @@
+package com.merilytics.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.merilytics.config.TokenValidator;
+import com.merilytics.dao.ItemMasterDAO;
+import com.merilytics.model.ItemMasterModel;
+import com.merilytics.util.Conversion;
+import com.merilytics.util.Loggers;
+
+@Controller
+public class ItemMasterController {
+
+	@Resource
+	private ItemMasterDAO itemMasterDAO;
+
+	@Resource
+	private ItemMasterModel itemMasterModel;
+
+	@Resource
+	private TokenValidator tokenValidator;
+
+	@Resource
+	private EmployeeController employeeController;
+
+	@RequestMapping(value = "/getItemMasterDetails", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<?> getItemMasterDetails(HttpServletRequest request,
+			HttpServletResponse response) {
+
+		return new ResponseEntity<>("{\"status\":\"Error in Current Project\"}", HttpStatus.BAD_REQUEST);
+
+		// System.out.println(request.getHeader("token"));getItemMasterDetails
+
+		// return itemMasterDAO.getItemMasterDetailsDatabase();
+	}
+
+	@RequestMapping(value = "/getItemMasterPagination", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<?> getItemMasterPagination(@RequestBody Map<String, Object> internalMap,
+			HttpServletRequest request, HttpServletResponse response) {
+
+		String name = tokenValidator.isToken(request.getHeader("token"), request, response);
+
+		// Loggers.INFO_lOGGER.info(name + " Enter into item Master Screen");
+
+		if (name == null) {
+
+			return new ResponseEntity<>("{\"status\":\"Error in Current Project\"}", HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<>(itemMasterModel.getItemMasterPagination(internalMap), HttpStatus.OK);
+
+	}
+
+	@RequestMapping(value = "/getPagination", method = RequestMethod.GET)
+	public @ResponseBody List<Map<String, Object>> getPagination() {
+		return itemMasterModel.getPagination();
+	}
+
+	@RequestMapping(value = "/insertItemMasterDetails", method = RequestMethod.POST)
+	public @ResponseBody Boolean insertItemMasterDetails(@RequestBody Map<String, Map<String,Object>> itemMasterBO,
+			HttpServletRequest request, HttpServletResponse response) {
+
+		String name = tokenValidator.isToken(request.getHeader("token"), request, response);
+
+		Loggers.INFO_lOGGER.info(name + " insert data into item Master i.e " + itemMasterBO);
+	
+		Map<String, Object> mapOfFinishOrRaw = (Map<String, Object>) itemMasterBO.get("finishedOrRaw");
+		Map<String, Object> mapOfItemMasterBO = (Map<String, Object>) itemMasterBO.get("newFields");
+		
+		
+		
+		if (Conversion.toBoolean(mapOfFinishOrRaw.get("finishOrRaw"))) {
+			return itemMasterModel.insertItemMasterDetails(mapOfItemMasterBO);
+
+		} else {
+			return itemMasterModel.insertItemMasterDetailsRawMaterial(mapOfItemMasterBO);
+
+		}
+
+	}
+
+	@RequestMapping(value = "/updateItemMasterDetails", method = RequestMethod.POST)
+	public @ResponseBody Boolean updateItemMasterDetails(@RequestBody Map<String, Object> itemMasterBO,
+			HttpServletRequest request, HttpServletResponse response) {
+
+		String name = tokenValidator.isToken(request.getHeader("token"), request, response);
+
+		Loggers.INFO_lOGGER.info(name + " Update data into item Master i.e " + itemMasterBO);
+
+		Map<String, Object> mapOfFinishOrRaw = (Map<String, Object>) itemMasterBO.get("finishedOrRaw");
+		Map<String, Object> mapOfItemMasterBO = (Map<String, Object>) itemMasterBO.get("newFields");
+		
+		
+		if (Conversion.toBoolean(mapOfFinishOrRaw.get("finishOrRaw"))) {
+			return itemMasterModel.insertItemMasterDetails(mapOfItemMasterBO);
+
+		} else {
+			return itemMasterModel.insertItemMasterDetailsRawMaterial(mapOfItemMasterBO);
+
+		}
+	}
+
+	@RequestMapping(value = "/deleteItemMasterDetails", method = RequestMethod.POST)
+	public @ResponseBody Boolean deleteItemMasterDetails(@RequestBody Map<String, Object> itemMasterBO,
+			HttpServletRequest request, HttpServletResponse response) {
+
+		String name = tokenValidator.isToken(request.getHeader("token"), request, response);
+
+		Loggers.INFO_lOGGER.info(name + " Delete data in item Master i.e  " + itemMasterBO);
+
+		return itemMasterModel.deleteItemMasterDetails(itemMasterBO);
+	}
+
+	@RequestMapping(value = "/getItemMasterExcellDownload", method = RequestMethod.GET)
+	public @ResponseBody Map<String, Object> getItemMasterExcellDownload() {
+		return itemMasterModel.getItemMasterExcellDownload();
+	}
+
+	@RequestMapping(value = "/uniqueSKUID", method = RequestMethod.POST)
+	public @ResponseBody Object uniqueSKUID(@RequestBody Map<String, Object> itemMasterBO) {
+		return itemMasterModel.uniqueSKUID(itemMasterBO);
+	}
+
+}
