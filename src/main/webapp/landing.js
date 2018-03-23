@@ -7,7 +7,7 @@ var Authentication =  angular.module('landing',['ngMaterial', 'ngMessages', 'ngA
 Authentication.config(["$locationProvider", "$stateProvider", "$urlRouterProvider", "$mdThemingProvider" ,function(l, s, u, t) {
  l.hashPrefix('');
  u.otherwise("/");
- s.state('logIn', { url: "/", template: '<login-screen layout-fill layout="row" layout-align="center center"></login-screen>', resolve: { data: function($q, $state, $window, $timeout) { var deferred = $q.defer(); $timeout(function() { if ($window.localStorage.getItem(tokenName)) { $state.go('landingScreen'); deferred.reject(); } else { deferred.resolve(); } }); return deferred.promise; } } });
+ s.state('logIn', { url: "/", template: '<login-screen></login-screen>', resolve: { data: function($q, $state, $window, $timeout) { var deferred = $q.defer(); $timeout(function() { if ($window.localStorage.getItem(tokenName)) { $state.go('landingScreen'); deferred.reject(); } else { deferred.resolve(); } }); return deferred.promise; } } });
 
 
  //t.generateThemesOnDemand(false);

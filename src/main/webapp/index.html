@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html ng-cloak lang="en" data-ng-app="landing">
 <head>
+<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
  <title>ChatBot</title>      
  <!-- Required meta tags -->
  <meta charset="utf-8">
@@ -10,6 +14,7 @@
  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"  rel="stylesheet">
  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="Authentication/Styles/design.css">
+	<link rel="stylesheet" type="text/css" href="Authentication/Styles/creative.css">
 	
 	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.1/angular-material.min.css">
@@ -32,8 +37,8 @@
   <script type="text/javascript" src="initiate.js"></script>
 </head>
 
-<body layout="column" md-theme="meritus" ng-controller="landingController" style="max-height: 100%;overflow: hidden;"> 
- <div ui-view flex layout="column" style="overflow: hidden !important;"></div> 
+<body id="page-top"  ng-controller="landingController"> 
+ <div ui-view ></div> 
 </body>
 
 </html>
