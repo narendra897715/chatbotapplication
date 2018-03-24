@@ -1,6 +1,7 @@
 package com.merilytics.controller;
 
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,35 +14,46 @@ public class Chat {
 
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/chatOutput", method = RequestMethod.POST)
-	public @ResponseBody String getUsers(@RequestBody String outPut) {
+	public @ResponseBody Map<String,String> getUsers(@RequestBody String outPut) {
+		
+		Map<String,String> map = new LinkedHashMap<String,String>();
+		
+		
 		if(outPut.equalsIgnoreCase("Hi"))
 		{
-			return "Hello how can I help you";
+			map.put("status", "Hello how can I help you");
+			return map;
 			
 		}
 		else if(outPut.equalsIgnoreCase("I Love You"))
 		{
-			return "I To Love You";
+			map.put("status", "I To Love You");
+			return map;
 			
 		}
 		else if(outPut.equalsIgnoreCase("Can I know your name"))
 		{
-			return "My name is computer";
+			map.put("status", "My name is computer");
+			return map;
 			
 		}
 		else if(outPut.equalsIgnoreCase("Bye"))
 		{
-			return "Bye Take Care";
+			map.put("status", "Bye Take Care");
+			return map;
 			
 		}
 		else if(outPut.equalsIgnoreCase("Is this Merilytics"))
 		{
-			return "Yes it is";
+			map.put("status", "Yes it is");
+			return map;
 			
 		}
 		
-		else 
-			return "Please Enter Valid Sentence";
+		else {
+			map.put("status","Please Enter Valid Sentence");
+			return map;
+		}
 		
 	}
 	

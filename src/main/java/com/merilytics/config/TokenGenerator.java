@@ -1,4 +1,4 @@
-package com.merilytics.config;
+/*package com.merilytics.config;
 
 import java.io.IOException;
 
@@ -29,7 +29,7 @@ public class TokenGenerator implements Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-		/*String path = httpRequest.getServletPath();
+		String path = httpRequest.getServletPath();
 		if (path == null || path.equals("/")|| path.equals("/OTPCheck")||path.startsWith("/Authentication/Partials") || path.startsWith("/Authentication/Assets") || path.startsWith("/Authentication/Styles")|| path.startsWith("/Authentication/View")
 				|| path.startsWith("/Authentication/Directives") || path.startsWith("/Authentication/ExcelTemplates")
 				|| path.startsWith("/Authentication/Filters") || path.startsWith("/Authentication/Controllers") || path.startsWith("/Authentication/Services")
@@ -37,7 +37,7 @@ public class TokenGenerator implements Filter {
 				|| path.equalsIgnoreCase("/forgotpasswordcontroller") || path.equalsIgnoreCase("/logoutuser")|| path.equalsIgnoreCase("/index.html")|| path.equalsIgnoreCase("/forceChangePassword")
 				|| path.equalsIgnoreCase("/checkemail")) {
 			chain.doFilter(request, response);
-		}*/
+		}
 
 		// check the availability of token in data base if available forward the request
 		// else send error
@@ -49,9 +49,9 @@ public class TokenGenerator implements Filter {
 			chain.doFilter(httpRequest, httpResponse);
 		} else {
 			httpResponse.sendError(400, "Bad Request");
-			/*pw=response.getWriter();
+			pw=response.getWriter();
 			response.setContentType("text/html");
-			 pw.println("<span style='color:red'>Request not allowed</span>");*/
+			 pw.println("<span style='color:red'>Request not allowed</span>");
 			return;
 		}
 
@@ -66,3 +66,4 @@ public class TokenGenerator implements Filter {
 	}
 
 }
+*/

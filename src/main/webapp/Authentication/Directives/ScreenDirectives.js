@@ -15,6 +15,12 @@
 	        	/* Region Start: logIn Block Form */ 
 	        	loginController.invalidCredenticalsMessage = "Invalid Email ID or Password.";
 	        	
+	        	loginController.callLoginRequest = function (form){
+	        		insertChat("me", form); 
+	        		var promise=httpPreConfig({ method: 'POST', url: 'chatOutput',data:form });
+					promise.then(function (response) { insertChat("bot", response.data.status);  }, function(reason){ console.log(reason) }); 
+	        	}
+	        	
 	        	$(document).ready(function(){
 	            	$(".left-first-section").click(function(){
 	                    $('.main-section').toggleClass("open-more");
@@ -136,12 +142,7 @@
 	        	
 	            
 	        }],
-	        compile: function(tElement, tAttrs, transclude) {
-	            return {
-	               pre: function preLink(scope, iElement, iAttrs, controller) { },
-	               post: function postLink(scope, iElement, iAttrs, controller) { }
-	            }
-	         },
+	       
 	        controllerAs: 'loginController',
 	        link: function(scope, element, attrs, controllers) { },
 	        templateUrl : 'Authentication/View/login.html'

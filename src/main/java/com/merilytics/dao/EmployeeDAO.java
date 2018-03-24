@@ -1,4 +1,4 @@
-package com.merilytics.dao;
+/*package com.merilytics.dao;
 
 import java.security.SecureRandom;
 import java.sql.Timestamp;
@@ -168,7 +168,7 @@ public class EmployeeDAO {
 		String token = ddto.getUserToken();
 		// forward the token to dataBase
 
-		/*SessionFactory sf = authenticationTemplete.getSessionFactory();
+		SessionFactory sf = authenticationTemplete.getSessionFactory();
 		Transaction tx= null;
 		Session session = sf.openSession();
 		String queryString = "EXEC spl_menu '" + email + "'";
@@ -185,10 +185,10 @@ public class EmployeeDAO {
 		}finally {
 			
 			session.close();
-		}*/
+		}
 
 		// menu0 is the old version of menu
-		/*if (ddto.isEligibility_for_appraisal() || ddto.isEligibility_to_provide_feedback()) {
+		if (ddto.isEligibility_for_appraisal() || ddto.isEligibility_to_provide_feedback()) {
 			sendMap.put("menu0", model.getScreensforLogin(ddto.getRole_id(), ddto.isEligibility_for_appraisal(),
 					ddto.isEligibility_to_provide_feedback()));
 		} else {
@@ -198,17 +198,17 @@ public class EmployeeDAO {
 			return returnvalue;
 		}
 		
-		sendMap.put("stateProvider", model.stateProvider(ddto.getRole_id()));*/
+		sendMap.put("stateProvider", model.stateProvider(ddto.getRole_id()));
 
-		/*sendMap.put("admin", isAdmin(ddto.getRole_id()));
+		sendMap.put("admin", isAdmin(ddto.getRole_id()));
 		
 		if (ddto.getForcePasswordChange() == true) {
 			sendMap.put("forcepasswordchange", "yes");
 		
 		} else {
 			sendMap.put("forcepasswordchange", "no");
-		}*/
-		/*ObjectMapper mapper = new ObjectMapper();
+		}
+		ObjectMapper mapper = new ObjectMapper();
 		
 		Map<String, Object> props = null;
 		
@@ -234,7 +234,7 @@ public class EmployeeDAO {
 		if (props != null) {
 			props1.putAll(props);
 		}
-		*/
+		
 		sendMap.put("userData", ddto);
 		sendMap.put("token", token);
 
@@ -245,7 +245,7 @@ public class EmployeeDAO {
 	@Transactional
 	public HashMap<String, Object> refreshSerive(String email) {
 
-		/*HashMap<String, Object> sendMap = new HashMap<String, Object>();
+		HashMap<String, Object> sendMap = new HashMap<String, Object>();
 		
 		DetachedCriteria detached1 = DetachedCriteria.forClass(EmployeeBO.class);
 		detached1.add(Restrictions.eq("status", true));
@@ -326,7 +326,7 @@ public class EmployeeDAO {
 		}
 		sendMap.put("userData", props1);
 		sendMap.put("menu", menu);
-		return sendMap;*/
+		return sendMap;
 		return null;
 	}
 
@@ -533,3 +533,4 @@ public class EmployeeDAO {
 	}
 
 }
+*/

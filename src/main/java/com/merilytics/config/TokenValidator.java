@@ -1,4 +1,4 @@
-package com.merilytics.config;
+/*package com.merilytics.config;
 
 import java.util.List;
 
@@ -41,3 +41,4 @@ public class TokenValidator {
 	}
 
 }
+*/

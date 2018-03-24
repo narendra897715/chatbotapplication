@@ -1,4 +1,4 @@
-package com.merilytics.mail;
+/*package com.merilytics.mail;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -119,3 +119,4 @@ public class EmailTemplate {
 	}
 
 }
+*/
