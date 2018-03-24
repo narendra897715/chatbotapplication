@@ -84,7 +84,7 @@ ul {
   overflow: hidden;
 }
 .left-chat p,.right-chat p{
-  background-color:#24248f; 
+  background-color:#372F85; 
   padding: 8px;
   color:#fff;
   border-radius: 5px; 
@@ -103,7 +103,7 @@ ul {
 }
 .right-chat p{
   float:right;
-  background-color: #29a329;
+  background-color: #708E21;
   
 }
 .third-section{
@@ -132,7 +132,7 @@ ul {
   left:50px;
   bottom:150px;
   border:15px solid transparent;
-  border-top-color:#24248f; 
+  border-top-color:#372F85; 
 }
 .right-chat:before{
   content: " ";
@@ -141,5 +141,5 @@ ul {
   right:50px;
   bottom:150px;
   border:15px solid transparent;
-  border-top-color:#29a329; 
+  border-top-color:#708E21; 
 }

@@ -60,15 +60,23 @@
 			</div>
 		</div>
 	</div>
-	<div class="row border-chat">
+	<div class="row border-chat" style="background-color:white">
 		<div class="col-md-12 col-sm-12 col-xs-12 third-section">
 			<div class="text-bar">
-				<input class="mytext" type="text" ng-model="Querymessages" placeholder="Write messege"><a href="#"><i class="fa fa-arrow-right" ng-click="loginController.callLoginRequest(Querymessages)" aria-hidden="true"></i></a>
+				<input style="width: 88.9%;" class="mytext" type="text" ng-model="Querymessages" placeholder="Write messege"><img ng-class="trer == false ? 'kjhlk' : 'yiuy'" ng-src="{{imageSrc}}" /><a href="#"><i class="fa fa-arrow-right" ng-click="loginController.callLoginRequest(Querymessages,imageSrc)" aria-hidden="true"></i></a>
+				<input type="image" src="Authentication/Assets/148903.png" style=" width: 40px;border: none;    margin-bottom: -16px;padding-left: 12px;"/>
+   
+				<input type="file" ng-file-select="onFileSelect($files)" ng-model="imageSrc" id="my_file" style="display: none;"/>
+				
 			</div>
 		</div>
 	</div>
 </div>
 
 
-
+<style>
+.kjhlk{
+display:none;
+}
+</style>
 
