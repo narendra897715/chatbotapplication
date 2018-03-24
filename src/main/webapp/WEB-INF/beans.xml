@@ -10,16 +10,16 @@
 	http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 	<context:component-scan
-		base-package="com.merilytics.model,com.merilytics.dao,com.merilytics.dto,com.merilytics.config,com.merilytics.mail,com.merilytics.util,com.merilytics.bo,com.merilytics.controller" />
+		base-package="com.merilytics.model,com.merilytics.dao,com.merilytics.mail,com.merilytics.util,com.merilytics.controller" />
 	<tx:annotation-driven />
 
 	<bean id="ds"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
 		<property name="url"
-			value="jdbc:mysql://10.10.0.9:3306/merilyticschatbot?useSSL=true" />
-		<property name="username" value="meritus" />
-		<property name="password" value="Meritus@123" />
+			value="jdbc:sqlserver://172.16.8.104:1433;databaseName=MIPLbot" />
+		<property name="username" value="cg" />
+		<property name="password" value="1234" />
 	</bean>
 
 
@@ -30,22 +30,21 @@
 		</bean> -->
 
 
-	<bean id="af"
-		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
-		<property name="dataSource" ref="ds" />
-		<property name="packagesToScan" value="com.merilytics.dto,com.merilytics.bo" />
-		<property name="hibernateProperties">
-			<props>
-				<prop key="hibernate.show_sql">false</prop>
-				<prop key="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</prop>
-				<!-- <prop key="hibernate.hbm2ddl.auto">update</prop> -->
-				<prop key="hibernate.cache.use_second_level_cache">false</prop>
-				<!-- <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop> 
-					<prop key="net.sf.ehcache.configurationResourceName">hibernate-ehcache.xml</prop> 
-					<prop key="hibernate.cache.use_query_cache">true</prop> -->
-			</props>
-		</property>
-	</bean>
+	 <bean id="af" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+   <property name="dataSource" ref="ds"/>
+   <property name="packagesToScan" value="com.merilytics.dto"/>
+   <property name="hibernateProperties">
+    <props>
+      <prop key="hibernate.show_sql">false</prop>
+      <prop key="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</prop>
+<!--       <prop key="hibernate.hbm2ddl.auto">update</prop> -->
+<prop key="hibernate.cache.use_second_level_cache">false</prop>
+	 <!--  <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
+      <prop key="net.sf.ehcache.configurationResourceName">hibernate-ehcache.xml</prop>
+      <prop key="hibernate.cache.use_query_cache">true</prop> -->
+    </props>
+   </property>
+ </bean>
 
 
 	<!-- <bean id="sf" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"> 
