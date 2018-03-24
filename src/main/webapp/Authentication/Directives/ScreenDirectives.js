@@ -85,7 +85,7 @@
 	        								'<img class="img-circle" src="'+me.avatar+'">'+
 	        								'<p>'+text+'</p> ' +
 	        								'</div>'+
-	        								'<span style="right:0px;    position: unset;    margin-left: 50px;">'+yDate+'</span>'+
+	        								'<span style="right:0px;    position: unset;    margin-left: 60px;">'+yDate+'</span>'+
 	        							'</div>'+
 	        						'</li>';
 	        	        $scope.trer = false;
