@@ -23,7 +23,7 @@ public class Chat {
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/chatOutput", method = RequestMethod.POST)
 	public @ResponseBody Map<String,Object> getChatingOutput(@RequestBody String outPut) {
-		System.out.println(outPut);
+		
 		return chatModel.getChatingOutput(outPut);
 	}
 	
