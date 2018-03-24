@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 
 import com.merilytics.mail.EmailTemplate;
+import com.merilytics.util.EmailTemplateStructure;
 
 @Configuration
 public class ChatDao {
@@ -24,6 +25,10 @@ public class ChatDao {
 	@Autowired(required = true)
 	@Qualifier("emailTemplete")
 	private EmailTemplate emailTemplate;
+	
+	/*@Autowired
+	private EmailTemplateStructure emailStructure;*/
+
 
 	@SuppressWarnings({ "deprecation", "rawtypes", "unchecked" })
 	public Map<String, Object> getChatingOutput(String outPut) {
@@ -63,8 +68,8 @@ public class ChatDao {
 
 				String ticket = mapOfdata.get("status").toString();
 				String ticketID = ticket.split("'")[1].split("'")[0];
-
-				emailTemplate.sendMailtoPmCycle("hhd", "New Ticket " + ticketID, mapOfdata.get("status").toString());
+				String emailContent = EmailTemplateStructure.mailForTicketRaising(ticket);
+				emailTemplate.sendMailtoPmCycle("hhd", "Ticket Submission -  " + ticketID, emailContent);
 				return mapOfdata;
 
 			} catch (Exception err) {
